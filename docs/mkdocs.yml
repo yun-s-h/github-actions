@@ -1,4 +1,4 @@
-site_name: spiderpool
+site_name: github-actions
 docs_dir: docs
 site_dir: site
 repo_name: yun-s-h/github-actions
