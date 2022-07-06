@@ -1,22 +1,33 @@
-name: main
+name: Demo Push
 
 on:
   push:
+    # Publish `master` as Docker `latest` image.
     branches:
       - main
+
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
+
 env:
   KUKEAN_OPERATOR_IMAGE_NAME: kubean-operator
   SPRAY_JOB_IMAGE_NAME: spray-job
 jobs:
   # Push image to GitHub Packages.
   # See also https://docs.docker.com/docker-hub/builds/
-  push:
+  build-push:
     runs-on: ubuntu-latest
     permissions:
       packages: write
       contents: read
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Log in to registry
         # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
