@@ -1,4 +1,4 @@
-name: Demo Push
+name: main
 
 on:
   push:
@@ -31,39 +31,9 @@ jobs:
       - name: Log in to registry
         # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
-      - name: kubean-operator Build image
-        run: docker build . --file ./build/images/kubean-operator/Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
-
-      - name: kubean-operator Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(git describe --tags --abbrev=8 --dirty)
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-
-      - name: spray-job Build image
-        run: docker build . --file ./build/images/spray-job/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
-
-      - name: spray-job Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(git describe --tags --abbrev=8 --dirty)
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
+             export REGISTRY_USER_NAME=$CI_REGISTRY_USER_NAME
+             export REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD
+             export REGISTRY_REPO="ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME"
+             export REGISTRY_SERVER_ADDRESS="ghcr.io"
+             export HELM_REPO="https://yun-s-h.github.io/github-actions/"
+             make -j2 release
