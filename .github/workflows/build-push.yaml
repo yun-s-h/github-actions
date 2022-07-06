@@ -8,6 +8,8 @@ on:
 env:
   KUKEAN_OPERATOR_IMAGE_NAME: kubean-operator
   SPRAY_JOB_IMAGE_NAME: spray-job
+  KUBESPRAY_IMAGE_NAME: kubespray
+  KUBESPRAY_VERSION: release-2.19
 jobs:
   build-push:
     runs-on: ubuntu-latest
@@ -23,10 +25,10 @@ jobs:
         # This is where you will update the PAT to GITHUB_TOKEN
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
 
-      - name: kubean-operator Build image
-        run: docker build . --file ./build/images/kubean-operator/Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+      - name: $KUKEAN_OPERATOR_IMAGE_NAME Build image
+        run: docker build . --file ./build/images/$KUKEAN_OPERATOR_IMAGE_NAME/Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME
 
-      - name: kubean-operator Push image
+      - name: $KUKEAN_OPERATOR_IMAGE_NAME Push image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
           # Change all uppercase to lowercase
@@ -39,10 +41,28 @@ jobs:
           docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
-      - name: spray-job Build image
-        run: docker build . --file ./build/images/spray-job/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
-      - name: spray-job Push image
+      - name: kubespray Build image
+        run: docker build . --file ./build/images/kubespray/Dockerfile --tag $KUBESPRAY_IMAGE_NAME --build-arg spray_tag=$KUBESPRAY_VERSION
+
+      - name: kubespray Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository }}/$KUBESPRAY_IMAGE_NAME
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(git describe --tags --abbrev=8 --dirty)
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:latest
+          docker push $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:latest
+
+      - name: $SPRAY_JOB_IMAGE_NAME Build image
+        run: docker build . --file ./build/images/$SPRAY_JOB_IMAGE_NAME/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME
+
+      - name: $SPRAY_JOB_IMAGE_NAME Push image
         run: |
           IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
           # Change all uppercase to lowercase
