@@ -76,10 +76,7 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
 
-  update-helm-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: spray-job Push image
+      - name: update-helm-version
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
           git clone https://github.com/yun-s-h/helm-charts.git
