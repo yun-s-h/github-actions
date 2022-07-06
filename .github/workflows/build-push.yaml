@@ -75,10 +75,11 @@ jobs:
       #     docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
       #     docker push $IMAGE_ID:$VERSION
       #     docker push $IMAGE_ID:latest
- 
+
       - name: update-helm-version
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
+          VERSION=echo $VERSION |tr 'v' ' '
           VARIABLES="version: $VERSION"
           sed -i "/^version/c $VARIABLES" charts/kubean/Chart.yaml
 
