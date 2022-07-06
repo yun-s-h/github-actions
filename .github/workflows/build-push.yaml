@@ -1,67 +1,73 @@
-name: ci
+name: Demo Push
 
 on:
   push:
+    # Publish `master` as Docker `latest` image.
     branches:
-      - 'main'
+      - main
 
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+  # Run tests for any PRs.
+  pull_request:
+
+env:
+  KUKEAN_OPERATOR_IMAGE_NAME: kubean-operator
+  SPRAY_JOB_IMAGE_NAME: spray-job
 jobs:
-  docker:
+  # Push image to GitHub Packages.
+  # See also https://docs.docker.com/docker-hub/builds/
+  push:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+
     steps:
-      -
-        name: Docker meta
-        id: meta-kubean-operator
-        uses: docker/metadata-action@v4
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/kubean/kubean-operator
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-      -
-        name: Docker meta
-        id: meta-spray-job
-        uses: docker/metadata-action@v4
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/kubean/spray-job
-          # generate Docker tags based on the following events/attributes
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-      -
-        name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push kubean-operator
-        uses: docker/build-push-action@v3
-        with:
-          context: ./build/images/kubean-operator
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-      -
-        name: Build and push spray-job
-        uses: docker/build-push-action@v3
-        with:
-          context: ./build/images/spray-job
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - uses: actions/checkout@v3
+
+      - name: Log in to registry
+        # This is where you will update the PAT to GITHUB_TOKEN
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
+
+      - name: kubean-operator Build image
+        run: docker build . --file Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: kubean-operator Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$KUKEAN_OPERATOR_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
+
+      - name: spray-job Build image
+        run: docker build . --file Dockerfile --tag $SPRAY_JOB_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
+
+      - name: spray-job Push image
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SPRAY_JOB_IMAGE_NAME
+
+          # Change all uppercase to lowercase
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          # Strip git ref prefix from version
+          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+          # Strip "v" prefix from tag name
+          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+          # Use Docker `latest` tag convention
+          [ "$VERSION" == "master" ] && VERSION=latest
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:$VERSION
+          docker push $IMAGE_ID:$VERSION
