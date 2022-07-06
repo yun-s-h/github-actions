@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-    steps:
+
       - name: update-helm-version
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
