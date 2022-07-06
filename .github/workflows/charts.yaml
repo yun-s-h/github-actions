@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: update-helm-version
-        run: |
+        run: | 
           VERSION=$(git describe --tags --abbrev=8 --dirty)
           VARIABLES="version: $VERSION"
           sed -i "/^version/c $VARIABLES" charts/kubean/Chart.yaml
