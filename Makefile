@@ -39,16 +39,7 @@ RETAIN_UI_IMAGE_WHEN_DEPLOY?="false" # on dev site, ui image in the helm chart m
 DEPLOY_ENV?="PROD"
 
 # Set your version by env or using latest tags from git
-VERSION?=""
-ifeq ($(VERSION), "")
-    LATEST_TAG=$(shell git describe --tags --abbrev=8)
-    ifeq ($(LATEST_TAG),)
-        # Forked repo may not sync tags from upstream, so give it a default tag to make CI happy.
-        VERSION="unknown"
-    else
-        VERSION=$(LATEST_TAG)
-    endif
-endif
+VERSION=$(shell git describe --tags --abbrev=8)
 
 # convert to git version to semver version v0.1.1-14-gb943a40 --> v0.1.1+14-gb943a40
 KUBEAN_VERSION := $(shell echo $(VERSION) | sed 's/-/+/1')
