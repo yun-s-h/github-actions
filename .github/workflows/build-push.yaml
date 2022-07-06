@@ -18,73 +18,74 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Log in to registry
-        # This is where you will update the PAT to GITHUB_TOKEN
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
-
-      - name: kubean-operator Build image
-        run: docker build . --file ./build/images/$KUKEAN_OPERATOR_IMAGE_NAME/Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME
-
-      - name: kubean-operator Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(git describe --tags --abbrev=8 --dirty)
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
-
-      # - name: kubespray Build image
-      #   run: docker build . --file ./build/images/kubespray/Dockerfile --tag $KUBESPRAY_IMAGE_NAME
+      # - uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
+      # - name: Log in to registry
+      #   # This is where you will update the PAT to GITHUB_TOKEN
+      #   run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin
       #
-      # - name: kubespray Push image
+      # - name: kubean-operator Build image
+      #   run: docker build . --file ./build/images/$KUKEAN_OPERATOR_IMAGE_NAME/Dockerfile --tag $KUKEAN_OPERATOR_IMAGE_NAME
+      #
+      # - name: kubean-operator Push image
       #   run: |
-      #     IMAGE_ID=ghcr.io/${{ github.repository }}/$KUBESPRAY_IMAGE_NAME
+      #     IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
       #     # Change all uppercase to lowercase
       #     IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
       #     # Strip git ref prefix from version
       #     VERSION=$(git describe --tags --abbrev=8 --dirty)
       #     echo IMAGE_ID=$IMAGE_ID
       #     echo VERSION=$VERSION
-      #     docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:$VERSION
-      #     docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:latest
+      #     docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:$VERSION
+      #     docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:latest
       #     docker push $IMAGE_ID:$VERSION
       #     docker push $IMAGE_ID:latest
-
-      - name: spray-job Build image
-        run: docker build . --file ./build/images/$SPRAY_JOB_IMAGE_NAME/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME  --build-arg spray_tag=$KUBESPRAY_TAG
-
-      - name: spray-job Push image
-        run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(git describe --tags --abbrev=8 --dirty)
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:$VERSION
-          docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
-          docker push $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:latest
+      #
+      # # - name: kubespray Build image
+      # #   run: docker build . --file ./build/images/kubespray/Dockerfile --tag $KUBESPRAY_IMAGE_NAME
+      # #
+      # # - name: kubespray Push image
+      # #   run: |
+      # #     IMAGE_ID=ghcr.io/${{ github.repository }}/$KUBESPRAY_IMAGE_NAME
+      # #     # Change all uppercase to lowercase
+      # #     IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+      # #     # Strip git ref prefix from version
+      # #     VERSION=$(git describe --tags --abbrev=8 --dirty)
+      # #     echo IMAGE_ID=$IMAGE_ID
+      # #     echo VERSION=$VERSION
+      # #     docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:$VERSION
+      # #     docker tag $KUBESPRAY_IMAGE_NAME $IMAGE_ID:latest
+      # #     docker push $IMAGE_ID:$VERSION
+      # #     docker push $IMAGE_ID:latest
+      #
+      # - name: spray-job Build image
+      #   run: docker build . --file ./build/images/$SPRAY_JOB_IMAGE_NAME/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME  --build-arg spray_tag=$KUBESPRAY_TAG
+      #
+      # - name: spray-job Push image
+      #   run: |
+      #     IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
+      #     # Change all uppercase to lowercase
+      #     IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+      #     # Strip git ref prefix from version
+      #     VERSION=$(git describe --tags --abbrev=8 --dirty)
+      #     echo IMAGE_ID=$IMAGE_ID
+      #     echo VERSION=$VERSION
+      #     docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:$VERSION
+      #     docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
+      #     docker push $IMAGE_ID:$VERSION
+      #     docker push $IMAGE_ID:latest
 
       - name: Clone helm chart repository
         uses: actions/checkout@v2
         with:
-          repository: yun-s-h/helm-charts 
+          repository: yun-s-h/helm-charts
           path: tmp-helm-chart
 
       - name: update-helm-version
         run: |
-          VERSION=$(git describe --tags --abbrev=8 --dirty)
+          # VERSION=$(git describe --tags --abbrev=8 --dirty)
+          VERSION=123
           cd tmp-helm-chart
           VARIABLES="version: $VERSION"
           sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
