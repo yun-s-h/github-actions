@@ -88,9 +88,9 @@ jobs:
         env:
           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
         with:
-          source-directory: output/
-          destination-github-username: 'cpina'
-          destination-repository-name: 'push-to-another-repository-output'
-          user-email: carles3@pina.cat
+          source-directory: charts/
+          destination-github-username: 'yun-s-h'
+          destination-repository-name: 'helm-charts'
+          user-email: kubean-robot@yun-s-h.com
           commit-message: See ORIGIN_COMMIT from $GITHUB_REF
           target-branch: main
