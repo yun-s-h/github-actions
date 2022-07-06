@@ -37,7 +37,7 @@ jobs:
 
       - name: kubean-operator Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$KUKEAN_OPERATOR_IMAGE_NAME
+          IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -55,7 +55,7 @@ jobs:
 
       - name: spray-job Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SPRAY_JOB_IMAGE_NAME
+          IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
