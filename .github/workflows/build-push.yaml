@@ -83,4 +83,6 @@ jobs:
           cd helm-charts
           VARIABLES="version: $VERSION"
           sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
+          git add -A
+          git commit -m "update Chart version $VERSION"
           git push
