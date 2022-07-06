@@ -76,31 +76,14 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
 
-  update-helm-version
+  update-helm-version:
     runs-on: ubuntu-latest
     steps:
       - name: spray-job Push image
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
-          git checkout gh-pages
-          sed 
-
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-      - name: Install Helm
-        uses: azure/setup-helm@v1
-        with:
-          version: v3.7.1
-      - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.3.0
-        env:
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          git clone https://github.com/yun-s-h/helm-charts.git
+          cd helm-charts
+          VARIABLES="version: $VERSION"
+          sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
+          git push
