@@ -87,6 +87,7 @@ jobs:
           # VERSION=$(git describe --tags --abbrev=8 --dirty)
           VERSION=123
           cd tmp-helm-chart
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           VARIABLES="version: $VERSION"
