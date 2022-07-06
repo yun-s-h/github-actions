@@ -9,3 +9,4 @@ helm install kubean ./charts -n kubean-system --create-namespace --debug --dry-r
 ``` shell
 helm upgrade --install --create-namespace --cleanup-on-fail  kubean kubean_release/kubean -n kubean-system
 ```
+# 测试
