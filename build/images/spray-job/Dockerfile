@@ -1,5 +1,4 @@
-ARG spray_tag
-FROM release-ci.daocloud.io/kubean/kubespray:$spray_tag
+FROM ghcr.io/yun-s-h/github-actions/kubean-operator:latest
 
 WORKDIR /kubespray
 
