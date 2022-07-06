@@ -33,7 +33,7 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $ --password-stdin;
              export REGISTRY_USER_NAME=$CI_REGISTRY_USER_NAME;
              export REGISTRY_PASSWORD=$CI_REGISTRY_PASSWORD;
-             export REGISTRY_REPO="ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME";
+             export REGISTRY_REPO="ghcr.io/${{ github.repository }}";
              export REGISTRY_SERVER_ADDRESS="ghcr.io";
              export HELM_REPO="https://yun-s-h.github.io/github-actions/";
              make -j2 release;
