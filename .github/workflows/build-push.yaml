@@ -60,7 +60,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./build/images/kubean-operator
-          context: ./build/images/spray-job
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
