@@ -19,9 +19,10 @@ jobs:
 
       - name: update-helm-version
         run: |
-          VERSION=$(git describe --tags --abbrev=10 --dirty)
+          VERSION=$(git describe --tags --abbrev=8 --dirty)
           VARIABLES="version: $VERSION"
           sed -i "/^version/c $VARIABLES" charts/kubean/Chart.yaml
+          echo $VARIABLES > charts/for-ci-health.txt
 
       - name: Pushes charts to another repository
         id: push_directory
