@@ -1,15 +1,9 @@
-name: Demo Push
+name: main
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
       - main
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
-  # Run tests for any PRs.
-  pull_request:
 env:
   KUKEAN_OPERATOR_IMAGE_NAME: kubean-operator
   SPRAY_JOB_IMAGE_NAME: spray-job
