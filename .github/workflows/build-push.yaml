@@ -9,7 +9,7 @@ env:
   KUKEAN_OPERATOR_IMAGE_NAME: kubean-operator
   KUBESPRAY_IMAGE_NAME: kubespray
   SPRAY_JOB_IMAGE_NAME: spray-job
-  KUBESPRAY_VERSION: release-2.19
+  KUBESPRAY_TAG: latest
 jobs:
   build-push:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
           docker push $IMAGE_ID:latest
 
       # - name: kubespray Build image
-      #   run: docker build . --file ./build/images/kubespray/Dockerfile --tag $KUBESPRAY_IMAGE_NAME --build-arg spray_tag=$KUBESPRAY_VERSION
+      #   run: docker build . --file ./build/images/kubespray/Dockerfile --tag $KUBESPRAY_IMAGE_NAME
       #
       # - name: kubespray Push image
       #   run: |
@@ -60,7 +60,7 @@ jobs:
       #     docker push $IMAGE_ID:latest
 
       - name: spray-job Build image
-        run: docker build . --file ./build/images/$SPRAY_JOB_IMAGE_NAME/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME
+        run: docker build . --file ./build/images/$SPRAY_JOB_IMAGE_NAME/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME  --build-arg spray_tag=$KUBESPRAY_TAG
 
       - name: spray-job Push image
         run: |
@@ -75,3 +75,32 @@ jobs:
           docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
+
+  update-helm-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: spray-job Push image
+        run: |
+          VERSION=$(git describe --tags --abbrev=8 --dirty)
+          git checkout gh-pages
+          sed 
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.7.1
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.3.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
