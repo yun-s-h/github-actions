@@ -93,4 +93,5 @@ jobs:
           sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
           git add -A
           git commit -m "update Chart version $VERSION"
+          git config --unset-all http.https://github.com/.extraheader
           git push
