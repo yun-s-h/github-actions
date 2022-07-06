@@ -76,13 +76,16 @@ jobs:
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
 
+      - name: Clone helm chart repository
+        uses: actions/checkout@v2
+        with:
+          repository: yun-s-h/helm-charts 
+          path: tmp-helm-chart
+
       - name: update-helm-version
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
-          git config user.name --global "$GITHUB_ACTOR"
-          git config user.email --global "$GITHUB_ACTOR@users.noreply.github.com"
-          git clone https://github.com/yun-s-h/helm-charts.git
-          cd helm-charts
+          cd tmp-helm-chart
           VARIABLES="version: $VERSION"
           sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
           git add -A
