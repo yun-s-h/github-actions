@@ -75,8 +75,8 @@ jobs:
       #     docker tag $SPRAY_JOB_IMAGE_NAME $IMAGE_ID:latest
       #     docker push $IMAGE_ID:$VERSION
       #     docker push $IMAGE_ID:latest
-
-      - name: update-helm-version 
+ 
+      - name: update-helm-version
         run: |
           VERSION=$(git describe --tags --abbrev=8 --dirty)
           VARIABLES="version: $VERSION"
