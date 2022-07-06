@@ -37,7 +37,7 @@ jobs:
 
       - name: kubean-operator Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$KUKEAN_OPERATOR_IMAGE_NAME
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$KUKEAN_OPERATOR_IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
@@ -49,13 +49,13 @@ jobs:
           docker tag $KUKEAN_OPERATOR_IMAGE_NAME $IMAGE_ID:latest
           docker push $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:latest
- 
+
       - name: spray-job Build image
         run: docker build . --file ./build/images/spray-job/Dockerfile --tag $SPRAY_JOB_IMAGE_NAME --label "runnumber=${GITHUB_RUN_ID}"
 
       - name: spray-job Push image
         run: |
-          IMAGE_ID=ghcr.io/${{ github.repository }}/$SPRAY_JOB_IMAGE_NAME
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$SPRAY_JOB_IMAGE_NAME
 
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
