@@ -84,14 +84,26 @@ jobs:
 
       - name: update-helm-version
         run: |
-          # VERSION=$(git describe --tags --abbrev=8 --dirty)
-          VERSION=123
-          cd tmp-helm-chart
-          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          VERSION=$(git describe --tags --abbrev=8 --dirty)
           VARIABLES="version: $VERSION"
           sed -i "/version/c $VARIABLES" charts/kubean/Chart.yaml
-          git add -A
-          git commit -m "update Chart version $VERSION"
-          git push
+
+      - name: helm release
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.8.1
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.4.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
