@@ -1,0 +1,25 @@
+name: Auto PR E2E CI
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: static check
+        run: echo golangci-lint
+
+      - name: unit test
+        run: ls
