@@ -1,4 +1,4 @@
-name: Auto PR E2E CI
+name: pr
 
 on:
   pull_request_target:
