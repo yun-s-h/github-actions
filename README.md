@@ -1,6 +1,6 @@
 # KuBean
 
-![example workflow](https://github.com/kubean-io/kubean/actions/workflows/main.yaml/badge.svg) ![codecov](https://codecov.io/gh/kubean-io/kubean/branch/main/graph/badge.svg?token=8FX807D3QQ) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6263/badge)](https://bestpractices.coreinfrastructure.org/projects/6263)
+[![example workflow](https://github.com/kubean-io/kubean/actions/workflows/main.yaml/badge.svg)](https://gitlab.daocloud.cn/ndx/engineering/kubean/-/pipelines) [![codecov](https://codecov.io/gh/kubean-io/kubean/branch/main/graph/badge.svg?token=8FX807D3QQ)](https://codecov.io/gh/kubean-io/kubean) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/6263/badge)](https://bestpractices.coreinfrastructure.org/projects/6263)
 
 KuBean是一款用于自动化安装k8s集群的工具
 
