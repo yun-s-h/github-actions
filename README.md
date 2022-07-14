@@ -1,6 +1,6 @@
 # KuBean
 
-![kubean-best-practice](https://gitlab.daocloud.cn/ndx/best-practice/-/raw/main/badges/kubean.svg)
+[![example workflow](https://github.com/kubean-io/kubean/actions/workflows/main.yaml/badge.svg)] [![codecov](https://codecov.io/gh/kubean-io/kubean/branch/main/graph/badge.svg?token=8FX807D3QQ)]
 
 KuBean是一款用于自动化安装k8s集群的工具
 
